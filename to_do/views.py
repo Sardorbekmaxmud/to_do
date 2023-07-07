@@ -3,30 +3,41 @@ from .models import ToDoListModel
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import datetime
-
+from .serializers import TodoSerializer
+from rest_framework import generics,permissions
+from .permissions import IsOwnerPermission
 # Create your views here.
-class ListToDoApiView(APIView):
-    def get(self,request,*args,**kwargs):
-        tasks = ToDoListModel.objects.all()
-        result = []
-        for task in tasks:
-            result.append({
-            "id":task.pk,
-            "task":task.task,
-            "status":task.status,
-            "created_at":task.created_at,
-            "update_at":task.update_at})
-        return Response(result)
+class ListToDoApiView(generics.ListCreateAPIView):
+    queryset = ToDoListModel.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = (IsOwnerPermission,)
 
-class DetailToDoApiView(APIView):
-    def get(self,request,*args,**kwargs):
-        task = get_object_or_404(ToDoListModel,pk=kwargs['task_id'])
-        data = {"id":task.pk,
-                "task":task.task,
-                "status":task.status,
-                "created_at":task.created_at,
-                "update_at":task.update_at}
-        return Response(data)
+    # def get(self,request,*args,**kwargs):
+    #     tasks = ToDoListModel.objects.all()
+    #     result = []
+    #     for task in tasks:
+    #         result.append({
+    #         "id":task.pk,
+    #         "task":task.task,
+    #         "status":task.status,
+    #         "created_at":task.created_at,
+    #         "update_at":task.update_at,
+    #         "user_id":task.user_id}
+    #         )
+    #     return Response(result)
+
+class DetailToDoApiView(generics.RetrieveAPIView):
+    queryset  = ToDoListModel.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = (IsOwnerPermission,)
+    # def get(self,request,*args,**kwargs):
+    #     task = get_object_or_404(ToDoListModel,pk=kwargs['task_id'])
+    #     data = {"id":task.pk,
+    #             "task":task.task,
+    #             "status":task.status,
+    #             "created_at":task.created_at,
+    #             "update_at":task.update_at}
+    #     return Response(data)
 
 class CreateToDoApiView(APIView):
     def post(self,request,*args,**kwargs):

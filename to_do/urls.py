@@ -5,7 +5,7 @@ from .views import (ListToDoApiView,DetailToDoApiView,CreateToDoApiView,
 
 urlpatterns = [
     path('',ListToDoApiView.as_view()),
-    path('<int:task_id>/',DetailToDoApiView.as_view()),
+    path('<pk>/',DetailToDoApiView.as_view()),
     path('create/',CreateToDoApiView.as_view()),
     path('delete/<int:task_id>/',DeleteToDoApiView.as_view()),
     path('update_patch/<int:task_id>/',UpdatePatchApiView.as_view()),
